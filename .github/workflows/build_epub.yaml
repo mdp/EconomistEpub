@@ -1,0 +1,22 @@
+name: Build latest Economist on Thursday (at 10:30Z)
+
+on:
+  schedule:
+    - cron:  '30 22 * * THU'
+  workflow_dispatch:
+
+jobs:
+  scrape_and_build:
+    name: Login to Economist, scrape and build the epub
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+    - run: yarn
+    - run: yarn cli cron
+      env:
+        SMTP_PASS: ${{ secrets.SMTP_PASS }}
+        SMTP_USER: ${{ secrets.SMTP_USER }}

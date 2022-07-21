@@ -1,0 +1,24 @@
+{
+  "name": "economist_scraper",
+  "version": "1.0.0",
+  "main": "src/main.ts",
+  "repository": "git@github.com:1984vc/YCTracker.git",
+  "author": "Mark Percival <m@mdp.im>",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^9.3.0",
+    "dotenv": "^16.0.1",
+    "eta": "^1.12.3",
+    "nodemailer": "^6.7.5",
+    "playwright": "^1.23.3"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.42",
+    "@types/nodemailer": "^6.4.4",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
+  },
+  "scripts": {
+    "cli": "ts-node src/cmd/main.ts"
+  }
+}

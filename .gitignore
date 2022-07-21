@@ -1,0 +1,6 @@
+.env
+node_modules
+state/*
+!state/.gitempty
+out/*
+!out/.gitempty
