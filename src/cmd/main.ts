@@ -69,12 +69,8 @@ program.command('login')
     }
 })
 
-program.command('get-weekly-articles')
+program.command('get-current-week')
   .description('Get this week article list and save it to state')
-  // .argument('<string>', 'string to split')
-  // .option('--first', 'display just the first substring')
-  // .option('-s, --separator <char>', 'separator character', ',')
-  // .action((str, options) => {
   .action(async () => {
     const context = await getContext()
     const stateStore = new StateStore(statePath)

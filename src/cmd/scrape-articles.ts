@@ -4,6 +4,13 @@ import { BrowserContext, Page } from "playwright"
 import PageError from "../PageError"
 import StateStore from "../State"
 
+class ArticleScrapeError extends Error {
+    constructor(msg: string) {
+        super(msg);
+        Object.setPrototypeOf(this, ArticleScrapeError.prototype);
+    }
+}
+
 const getArticle = async (url: URL, page: Page): Promise<{title: string, subtitle: string, section: string, content: string[]}> => {
     console.log("Processing", url.pathname)
 
@@ -15,6 +22,7 @@ const getArticle = async (url: URL, page: Page): Promise<{title: string, subtitl
     const subtitle = await page.innerText("main article h2")
 
     const articleNode = (await page.$$('main article section'))[2]
+    if (!articleNode) throw new ArticleScrapeError("Article node not found")
     const content = await articleNode.$$eval("p, h2", (el) => el.map((l) => l.outerHTML))
 
 
@@ -25,16 +33,15 @@ const getArticle = async (url: URL, page: Page): Promise<{title: string, subtitl
 
 const filterUrls = (urls: string[]): string[] => {
     return urls.filter((url) => {
-        if (url.match(new RegExp('kals-cartoon$', 'i'))) { return false }
+        if (url.match(new RegExp('/kals-cartoon$', 'i'))) { return false }
         if (url.match(new RegExp('economist.com/graphic-detail', 'i'))) { return false }
-        if (url.match(new RegExp('economist.com/letters-to-the-editor$', 'i'))) { return false }
+        if (url.match(new RegExp('economist.com/letters', 'i'))) { return false }
         if (url.match(new RegExp('economist.com/economic-and-financial-indicators', 'i'))) { return false }
         return true
     })
 }
 
 export async function scrapeArticles(context: BrowserContext, stateStore: StateStore, outDir: string): Promise<void> {
-    // Array.prototype.slice.call(document.querySelectorAll("article section p")).map((p) => p.outerHTML).join("\n")
     await stateStore.sync()
     const page = await context.newPage()
     const articles = stateStore.state.articles
@@ -43,15 +50,14 @@ export async function scrapeArticles(context: BrowserContext, stateStore: StateS
     if (articlesToGet.length == 0) throw new Error("No urls to scrape")
     await mkdir(outDir, {recursive: true})
     console.log("Scraping ",  articlesToGet.length, "articles")
-    try {
-        for (const urlStr of articlesToGet) {
-            const url = new URL(urlStr)
-            const {title, subtitle, section, content} = await getArticle(url, page)
-
+    for (const urlStr of articlesToGet) {
+        const url = new URL(urlStr)
+        try {
+            const { title, subtitle, section, content } = await getArticle(url, page)
             const articlePath = url.pathname.split("/").slice(1).join("_") + ".json"
 
             const outPath = path.join(outDir, articlePath)
-            await writeFile(outPath, JSON.stringify({title, subtitle, content, url}, null, 2))
+            await writeFile(outPath, JSON.stringify({ title, subtitle, content, url }, null, 2))
             stateStore.state.articles[url.toString()] = {
                 title,
                 subtitle,
@@ -60,10 +66,13 @@ export async function scrapeArticles(context: BrowserContext, stateStore: StateS
             }
             console.log("Finished: ", url.pathname)
             await stateStore.write()
+        } catch (err) {
+            if (err instanceof ArticleScrapeError) {
+                console.log("Unable to scrape content of ", url.toString())
+                // Ignore and move to next article
+            } else {
+                throw new PageError(err, page)
+            }
         }
-    } catch (e) {
-        throw new PageError(e, page)
-    } finally {
-        page.close()
     }
 }
