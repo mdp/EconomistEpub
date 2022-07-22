@@ -5,8 +5,8 @@ import { BrowserContext, chromium, Page } from "playwright";
 import path from "path";
 import { readFile, writeFile } from "fs/promises";
 import StateStore from "../State";
-import { scrapeArticles } from "./scrape-articles";
-import { buildEpub } from "./build-epub";
+import { scrapeArticle, scrapeArticles } from "./scrape-articles";
+import { buildEpub, cleanContent } from "./build-epub";
 import { login } from "./login";
 import { getWeeklyEdition } from "./getWeeklyEdition";
 
@@ -117,6 +117,29 @@ program.command('build-epub')
   .action(async () => {
     const stateStore = new StateStore(statePath)
     await buildEpub(stateStore, path.join(__dirname, '..', '..', 'out'))
+})
+
+program.command('debug-clean-article')
+  .description('Clean an article and see the html')
+  .argument('article.json', 'Article json to clean')
+  // .option('--first', 'display just the first substring')
+  // .option('-s, --separator <char>', 'separator character', ',')
+  // .action((str, options) => {
+  .action(async (fileName) => {
+    const article = JSON.parse(await readFile(fileName, 'utf-8'))
+    console.log(cleanContent(article.content))
+})
+
+program.command('debug-scrape-article')
+  .description('scrape a url and dump the json details')
+  .argument('url', 'URL to scrape')
+  // .option('--first', 'display just the first substring')
+  // .option('-s, --separator <char>', 'separator character', ',')
+  // .action((str, options) => {
+  .action(async (url) => {
+    const context = await getContext()
+    console.log(await scrapeArticle(context, url))
+    await close(context)
 })
 
 program.parse()

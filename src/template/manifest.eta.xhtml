@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" xml:lang="en" unique-identifier="pub-id" prefix="cc: http://creativecommons.org/ns#">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:title id="title"><%= it.title %></dc:title>
+    <meta refines="#title" property="title-type">main</meta>
+    <dc:creator id="creator">The Economist Group</dc:creator>
+    <meta refines="#creator" property="file-as">The Economist Group</meta>
+    <meta refines="#creator" property="role" scheme="marc:relators">aut</meta>
+    <dc:identifier id="pub-id">io.github.mdp.economist</dc:identifier>
+    <dc:language>en-US</dc:language>
+    <meta property="dcterms:modified"><%= it.date %></meta>
+  </metadata>
+  <manifest>
+    <item href="toc.ncx" id="ncx" media-type="application/x-dtbncx+xml" />
+    <item id="toc" properties="nav" href="toc.xhtml" media-type="application/xhtml+xml"/>
+    <item id="titlepage" href="titlepage.xhtml" media-type="application/xhtml+xml"/>
+    <item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>
+    <item id="style" href="styles.css" media-type="text/css"/>
+    <% it.hrefs.forEach((h, idx) => { %>
+    <item id="article_<%~ idx %>" href="<%~ h %>" media-type="application/xhtml+xml"/>
+    <% }) %>
+  </manifest>
+
+  <spine toc="ncx">
+    <itemref idref="toc" linear="yes"/>
+    <itemref idref="titlepage" linear="yes"/>
+    <itemref idref="cover" linear="yes"/>
+    <% it.hrefs.forEach((h, idx) => { %>
+    <itemref idref="article_<%~ idx %>" linear="yes" />
+    <% }) %>
+  </spine>
+</package>

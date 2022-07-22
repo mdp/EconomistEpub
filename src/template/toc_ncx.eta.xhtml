@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ncx version="2005-1" xml:lang="en" xmlns="http://www.daisy.org/z3986/2005/ncx/">
+
+    <head>
+        <!-- The following four metadata items are required for all NCX documents,
+        including those that conform to the relaxed constraints of OPS 2.0 -->
+        <meta name="dtb:uid" content="io.github.mdp.economist"/> <!-- same as in .opf -->
+        <meta name="dtb:depth" content="2"/> <!-- 1 or higher -->
+        <meta name="dtb:totalPageCount" content="0"/> <!-- must be 0 -->
+        <meta name="dtb:maxPageNumber" content="0"/> <!-- must be 0 -->
+    </head>    
+    <docTitle>
+        <text><%= it.title %></text>
+    </docTitle>
+    <docAuthor>
+        <text/>
+    </docAuthor>
+    <navMap>
+        <% let idx = 0 %>
+        <% it.sections.forEach((section) => { %>
+        <navPoint class="h1" id="section_<%~ idx %>" playOrder="<%~ idx %>">
+            <navLabel>
+                <text><%= section.title %></text>
+            </navLabel>
+            <content src="<%~ section.articles[0].href %>"/>
+            <% section.articles.forEach((article) => { %>
+            <navPoint class="h2" id="article_<%~ idx %>" playOrder="<%~ idx %>">
+            <% idx = idx + 1 %>
+                <navLabel>
+                    <text><%= article.title %></text>
+                </navLabel>
+                <content src="<%~ article.href %>"/>
+            </navPoint>
+            <% }) %>
+        </navPoint>
+        <% }) %>
+    </navMap>
+</ncx>

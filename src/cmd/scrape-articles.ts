@@ -11,17 +11,33 @@ class ArticleScrapeError extends Error {
     }
 }
 
-const getArticle = async (url: URL, page: Page): Promise<{title: string, subtitle: string, section: string, content: string[]}> => {
+type ArticleContent = {
+    title: string,
+    subtitle: string
+    section: string,
+    content: string[]
+}
+
+const getArticle = async (url: URL, page: Page): Promise<ArticleContent> => {
     console.log("Processing", url.pathname)
 
     const section = url.pathname.split('/')[1]
 
     await page.goto(url.toString());
     await page.waitForLoadState("domcontentloaded")
-    const title = await page.innerText("main article h1")
-    const subtitle = await page.innerText("main article h2")
+    const articleSections = await page.$$('main article section')
+    const headerNode = articleSections[0]
+    const articleNode = articleSections[2]
 
-    const articleNode = (await page.$$('main article section'))[2]
+    const title = await headerNode.$eval('h1', node => node.innerText)
+
+    let subtitle = ""
+    try {
+        subtitle = await headerNode.$eval('h2', node => node.innerText) || ""
+    } catch (e) {
+        console.log("no subtitle")
+    }
+
     if (!articleNode) throw new ArticleScrapeError("Article node not found")
     const content = await articleNode.$$eval("p, h2", (el) => el.map((l) => l.outerHTML))
 
@@ -75,4 +91,10 @@ export async function scrapeArticles(context: BrowserContext, stateStore: StateS
             }
         }
     }
+}
+
+export async function scrapeArticle(context: BrowserContext, urlStr: string): Promise<ArticleContent> {
+    const page = await context.newPage()
+    const url = new URL(urlStr)
+    return getArticle(url, page)
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+
+<head>
+    <title>Economist</title>
+    <link rel="stylesheet" href="styles.css" type="text/css" />
+    <meta charset="utf-8" />
+</head>
+
+<body>
+    <section class="frontmatter TableOfContents" epub:type="frontmatter toc">
+        <header>
+            <h1 class="toc"><%= it.date %></h1>
+        </header>
+        <nav xmlns:epub="http://www.idpf.org/2007/ops" epub:type="toc" id="toc">
+            <h2><%= it.title %></h2>
+            <ol>
+                <% it.sections.forEach((section) => { %>
+                <li>
+                    <span class="navhd"> <%= section.title %> </span>
+                    <ol>
+                        <% section.articles.forEach((article) => { %>
+                        <li>
+                            <a href="<%~ article.href %>">
+                                <span class="title"><%= article.title %></span>
+                                <% if (article.subtitle.length > 0) { %>
+                                <span class="subtitle"><%= article.subtitle %></span>
+                                <% } %>
+                            </a>
+                        </li>
+                        <% }) %>
+                    </ol>
+                </li>
+                <% }) %>
+            </ol>
+        </nav>
+    </section>
+</body>
+
+</html>

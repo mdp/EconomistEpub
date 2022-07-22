@@ -1,0 +1,27 @@
+body {
+  font-family: sans-serif;
+}
+
+/* TOC stuff */
+
+h1.toc {
+    font-size: 1em;
+}
+
+ol {
+    padding-left: 1em;
+}
+
+ol li {
+  list-style-type: none;
+  padding: 0.25em 0em;
+}
+
+ol li span {
+  display: block;
+}
+
+ol li .subtitle {
+  font-size: 0.75em;
+  padding-top: 0.25em;
+}
