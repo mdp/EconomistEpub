@@ -9,6 +9,8 @@ import * as CSSselect from "css-select"
 import { replaceElement, textContent } from "domutils"
 import { Element } from "domhandler"
 
+const timestamp = new Date()
+
 const startEpub = async (epubDir: string): Promise<void> => {
     await copy(path.join(__dirname, '..', 'template', 'epub_skeleton'), epubDir)
 }
@@ -59,6 +61,7 @@ export const fixLinks = (content: string[], validUrls: string[]): string[] => {
 }
 
 type Magazine = {
+    pubId: string
     title?: string
     date?: string
     sections: {
@@ -75,8 +78,11 @@ const capitalize = (str: string): string => {
     return str.split("-").map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(" ")
 }
 
+const pubId = (): string => "io.github.mdp" + timestamp.toISOString()
+
 const buildToc = ({ state }: StateStore): Magazine => {
     const magazine: Magazine = {
+        pubId: pubId(),
         title: state.title,
         date: state.date,
         sections:[]
@@ -145,7 +151,7 @@ export async function buildEpub(stateStore: StateStore, outDir: string): Promise
 
     // Special date format for epub modified, no trailing ms
     const date = new Date().toISOString().replace(/\.[0-9]+Z/, 'Z')
-    const manifest = Eta.render(await getTemplate('manifest'), { hrefs: manifestList, title: "Economist - " + stateStore.state.title, date})
+    const manifest = Eta.render(await getTemplate('manifest'), { hrefs: manifestList, title: "Economist - " + stateStore.state.title, date, pubId: pubId()})
     await writeFile(path.join(outPath, 'OEBPS', 'manifest.opf'), manifest as string)
 
     // Special date format for epub modified, no trailing ms

@@ -10,10 +10,10 @@
 <body>
     <section class="frontmatter TableOfContents" epub:type="frontmatter toc">
         <header>
-            <h1 class="toc"><%= it.date %></h1>
+            <h1 class="toc"><%= it.title %></h1>
+            <h3 class="toc"><%= it.date %></h3>
         </header>
         <nav xmlns:epub="http://www.idpf.org/2007/ops" epub:type="toc" id="toc">
-            <h2><%= it.title %></h2>
             <ol>
                 <% it.sections.forEach((section) => { %>
                 <li>
@@ -21,12 +21,7 @@
                     <ol>
                         <% section.articles.forEach((article) => { %>
                         <li>
-                            <a href="<%~ article.href %>">
-                                <span class="title"><%= article.title %></span>
-                                <% if (article.subtitle.length > 0) { %>
-                                <span class="subtitle"><%= article.subtitle %></span>
-                                <% } %>
-                            </a>
+                            <a href="<%~ article.href %>"><%= article.title %></a>
                         </li>
                         <% }) %>
                     </ol>

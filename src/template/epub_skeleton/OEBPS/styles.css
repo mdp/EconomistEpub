@@ -5,7 +5,11 @@ body {
 /* TOC stuff */
 
 h1.toc {
-    font-size: 1em;
+    font-size: 1.5em;
+}
+
+h3.toc {
+    font-size: 1.1em;
 }
 
 ol {
@@ -15,13 +19,4 @@ ol {
 ol li {
   list-style-type: none;
   padding: 0.25em 0em;
-}
-
-ol li span {
-  display: block;
-}
-
-ol li .subtitle {
-  font-size: 0.75em;
-  padding-top: 0.25em;
 }
