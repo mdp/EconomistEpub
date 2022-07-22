@@ -1,5 +1,6 @@
 body {
-  font-family: sans-serif;
+    font-family: sans-serif;
+    font-size: 1em;
 }
 
 /* TOC stuff */
@@ -13,10 +14,15 @@ h3.toc {
 }
 
 ol {
+    list-style-type: none;
     padding-left: 1em;
 }
 
 ol li {
-  list-style-type: none;
-  padding: 0.25em 0em;
+    list-style-type: none;
+    padding: 0.25em 0em;
+}
+
+small {
+    font-size: 1em;
 }
