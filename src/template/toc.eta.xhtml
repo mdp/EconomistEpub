@@ -8,24 +8,26 @@
 </head>
 
 <body>
-    <section class="frontmatter TableOfContents" epub:type="frontmatter toc">
-        <header>
-            <h1 class="toc"><%= it.title %></h1>
-            <h3 class="toc"><%= it.date %></h3>
-        </header>
-        <nav xmlns:epub="http://www.idpf.org/2007/ops" epub:type="toc" id="toc">
-            <ol>
-                <% it.sections.forEach((section) => { %>
-                <span class="navhd"> <%= section.title %> </span>
+    <header>
+        <h1 class="toc"><%= it.title %></h1>
+        <h3 class="toc"><%= it.date %></h3>
+    </header>
+    <nav xmlns:epub="http://www.idpf.org/2007/ops" epub:type="toc" id="toc">
+        <ol>
+            <% it.sections.forEach((section) => { %>
+            <li>
+                <a href="<%~ section.articles[0].href %>"><%= section.title %></a>
+                <ol>
                     <% section.articles.forEach((article) => { %>
                     <li>
                         <a href="<%~ article.href %>"><%= article.title %></a>
                     </li>
                     <% }) %>
-                <% }) %>
-            </ol>
-        </nav>
-    </section>
+                </ol>
+            </li>
+            <% }) %>
+        </ol>
+    </nav>
 </body>
 
 </html>
