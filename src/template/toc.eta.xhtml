@@ -16,16 +16,12 @@
         <nav xmlns:epub="http://www.idpf.org/2007/ops" epub:type="toc" id="toc">
             <ol>
                 <% it.sections.forEach((section) => { %>
-                <li>
-                    <span class="navhd"> <%= section.title %> </span>
-                    <ol>
-                        <% section.articles.forEach((article) => { %>
-                        <li>
-                            <a href="<%~ article.href %>"><%= article.title %></a>
-                        </li>
-                        <% }) %>
-                    </ol>
-                </li>
+                <span class="navhd"> <%= section.title %> </span>
+                    <% section.articles.forEach((article) => { %>
+                    <li>
+                        <a href="<%~ article.href %>"><%= article.title %></a>
+                    </li>
+                    <% }) %>
                 <% }) %>
             </ol>
         </nav>
