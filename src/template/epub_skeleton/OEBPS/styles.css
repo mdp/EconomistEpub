@@ -3,6 +3,29 @@ body {
     font-size: 1em;
 }
 
+
+h1 {
+    font-size: 1.5em;
+}
+
+h2 {
+    font-size: 1.2em;
+}
+
+h4 {
+    font-weight: bold;
+}
+
+h5 {
+    font-size: 0.8em;
+    text-transform: uppercase;
+}
+
+.footer_nav ul li {
+    list-style-type: none;
+    padding-left: 1em;
+}
+
 /* TOC stuff */
 
 h1.toc {
@@ -25,4 +48,5 @@ ol li {
 
 small {
     font-size: 1em;
+    text-transform: uppercase;
 }

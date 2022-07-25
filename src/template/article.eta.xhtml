@@ -3,16 +3,9 @@
     <head>
         <title><%= it.title %></title>
         <link type="text/css" rel="stylesheet" href="../../../../styles.css"/>
-        <style type="text/css">			
-			#canvas {
-				width: 16em;
-				height: 8em;
-				border: 1px solid black;
-				margin: 1em;
-			}			
-		</style>
     </head>
-    <body>
+    <body class="article">
+        <h5> <%= it.section %> </h5>
         <h1 id="c1"> <%= it.title %> </h1>
         <% if (it.subtitle.length > 0) { %>
         <h2 id="c2"> <%= it.subtitle %> </h2>
@@ -20,5 +13,20 @@
         <% it.content.forEach(function(p){ %>
             <%~ p %>
         <% }) %>
+        <div> <a href="../../../../cover.xhtml"> Back to Index </a> </div>
+        <% if (it.nextArticles.length > 0) { %>
+            <% if (it.nextArticles.length == 1) { %>
+            <h4>Next Article</h4>
+            <% } else { %>
+            <h4>Next Articles</h4>
+            <% } %>
+        <ul class="footer_nav">
+            <% it.nextArticles.forEach((article) => { %>
+            <li>
+                <a href="<%~ article.href %>"><%= article.title %></a>
+            </li>
+            <% }) %>
+        </ul>
+        <% } %>
     </body>
 </html>

@@ -32,6 +32,7 @@ export const cleanContent = (content: string[]): string[] => {
         return true
     })
     return filtered.map((str) => {
+        str = str.replace(/\&amp\;\#39\;/g, "'")
         const dom = parseDocument(str)
         return render(dom, {
             xmlMode: true
@@ -121,6 +122,7 @@ export async function buildEpub(stateStore: StateStore, outDir: string): Promise
 
     const template = await getTemplate('article')
     const articles = stateStore.state.articles
+    const urls = stateStore.state.urls
     const outPath = path.join(outDir, 'epub')
 
     await startEpub(outPath)
@@ -129,7 +131,16 @@ export async function buildEpub(stateStore: StateStore, outDir: string): Promise
 
     // Print out the html for each article
     for (const id in articles) {
-        const {filename} = articles[id]
+        const idx = urls.indexOf(id)
+        const {filename, section} = articles[id]
+        const nextArticles = urls.slice(idx+1, idx+5).filter((u) => !!articles[u]).map((id) => {
+            const article = articles[id]
+            return {
+                title: article.title,
+                href: '../../../../' + standardizeURL(id)
+            }
+        })
+        console.log(nextArticles.length)
         const {title, subtitle, content, url: urlStr} = JSON.parse(await readFile(path.join(outDir, 'articles', filename), 'utf-8'))
         const url = new URL(urlStr)
         const articlePath = path.join(outPath, 'OEBPS', url.pathname.split('/').slice(0,-1).join('/'))
@@ -138,25 +149,25 @@ export async function buildEpub(stateStore: StateStore, outDir: string): Promise
         console.log(articlePath, title)
         
 
-        const xhtml = Eta.render(template, {title, subtitle, content: fixLinks(cleanContent(content), Object.keys(articles))})
+        const xhtml = Eta.render(template, {title, subtitle, section, nextArticles, content: fixLinks(cleanContent(content), Object.keys(articles))})
         await writeFile(path.join(articlePath, articleFilename + '.xhtml'), xhtml as string)
  
     }
 
     const tocData = buildToc(stateStore)
     const toc = Eta.render(await getTemplate('toc'), { ...tocData })
-    await writeFile(path.join(outPath, 'OEBPS', 'toc.xhtml'), toc as string)
+    await writeFile(path.join(outPath, 'OEBPS', 'toc.xhtml'), toc as string, 'utf-8')
 
     const manifestList = stateStore.state.urls.filter((url) => !!articles[url]).map((u) => standardizeURL(u))
 
     // Special date format for epub modified, no trailing ms
     const date = new Date().toISOString().replace(/\.[0-9]+Z/, 'Z')
     const manifest = Eta.render(await getTemplate('manifest'), { hrefs: manifestList, title: "Economist - " + stateStore.state.title, date, pubId: pubId()})
-    await writeFile(path.join(outPath, 'OEBPS', 'manifest.opf'), manifest as string)
+    await writeFile(path.join(outPath, 'OEBPS', 'manifest.opf'), manifest as string, 'utf-8')
 
     // Special date format for epub modified, no trailing ms
     const tocNcx = Eta.render(await getTemplate('toc_ncx'), { ...tocData })
-    await writeFile(path.join(outPath, 'OEBPS', 'toc.ncx'), tocNcx as string)
+    await writeFile(path.join(outPath, 'OEBPS', 'toc.ncx'), tocNcx as string, 'utf-8')
 
 
 }

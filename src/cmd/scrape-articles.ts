@@ -73,7 +73,7 @@ export async function scrapeArticles(context: BrowserContext, stateStore: StateS
             const articlePath = url.pathname.split("/").slice(1).join("_") + ".json"
 
             const outPath = path.join(outDir, articlePath)
-            await writeFile(outPath, JSON.stringify({ title, subtitle, content, url }, null, 2))
+            await writeFile(outPath, JSON.stringify({ title, subtitle, content, url }, null, 2), 'utf-8')
             stateStore.state.articles[url.toString()] = {
                 title,
                 subtitle,

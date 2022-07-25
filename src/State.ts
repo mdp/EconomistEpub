@@ -47,6 +47,6 @@ export default class StateStore {
     }
 
     async write() {
-        await writeFile(this.statePath, JSON.stringify(this.state, null, 2))
+        await writeFile(this.statePath, JSON.stringify(this.state, null, 2), 'utf-8')
     }
 }

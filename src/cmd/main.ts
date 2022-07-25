@@ -23,7 +23,7 @@ async function close(context: BrowserContext): Promise<void> {
 
 async function createState(): Promise<boolean> {
     try {
-        await writeFile(browserStatePath, JSON.stringify({}), {flag: 'wx'})
+        await writeFile(browserStatePath, JSON.stringify({}), {flag: 'wx', encoding: 'utf-8'})
         return true
     } catch (_err) {
         return false;
@@ -138,7 +138,7 @@ program.command('debug-scrape-article')
   // .action((str, options) => {
   .action(async (url) => {
     const context = await getContext()
-    console.log(await scrapeArticle(context, url))
+    console.log(JSON.stringify(await scrapeArticle(context, url), null, 2))
     await close(context)
 })
 
