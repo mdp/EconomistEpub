@@ -67,6 +67,7 @@ type Magazine = {
     date?: string
     sections: {
         title: string
+        slug: string
         articles: {
             title: string
             subtitle: string
@@ -109,6 +110,7 @@ const buildToc = ({ state }: StateStore): Magazine => {
         if (articles.length > 0) {
             magazine.sections.push({
                 title: capitalize(section),
+                slug: section,
                 articles
             })
         }
@@ -133,14 +135,13 @@ export async function buildEpub(stateStore: StateStore, outDir: string): Promise
     for (const id in articles) {
         const idx = urls.indexOf(id)
         const {filename, section} = articles[id]
-        const nextArticles = urls.slice(idx+1, idx+5).filter((u) => !!articles[u]).map((id) => {
+        const nextArticles = urls.slice(idx+1, idx+20).filter((u) => !!articles[u]).map((id) => {
             const article = articles[id]
             return {
                 title: article.title,
                 href: '../../../../' + standardizeURL(id)
             }
         })
-        console.log(nextArticles.length)
         const {title, subtitle, content, url: urlStr} = JSON.parse(await readFile(path.join(outDir, 'articles', filename), 'utf-8'))
         const url = new URL(urlStr)
         const articlePath = path.join(outPath, 'OEBPS', url.pathname.split('/').slice(0,-1).join('/'))
@@ -149,7 +150,7 @@ export async function buildEpub(stateStore: StateStore, outDir: string): Promise
         console.log(articlePath, title)
         
 
-        const xhtml = Eta.render(template, {title, subtitle, section, nextArticles, content: fixLinks(cleanContent(content), Object.keys(articles))})
+        const xhtml = Eta.render(template, {title, subtitle, section, nextArticles: nextArticles.slice(0,5), content: fixLinks(cleanContent(content), Object.keys(articles))})
         await writeFile(path.join(articlePath, articleFilename + '.xhtml'), xhtml as string)
  
     }

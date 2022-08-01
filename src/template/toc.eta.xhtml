@@ -16,7 +16,7 @@
         <ol>
             <% it.sections.forEach((section) => { %>
             <li>
-                <a href="<%~ section.articles[0].href %>"><%= section.title %></a>
+                <a id="<%= section.slug %>" href="<%~ section.articles[0].href %>" class="toc-section-title"><%= section.title %></a>
                 <ol>
                     <% section.articles.forEach((article) => { %>
                     <li>
