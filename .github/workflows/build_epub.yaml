@@ -9,6 +9,7 @@ jobs:
   scrape_and_build:
     name: Login to Economist, scrape and build the epub
     runs-on: ubuntu-latest
+    environment: Cron Actions
     steps:
     - uses: actions/checkout@v3
 
@@ -17,16 +18,8 @@ jobs:
         node-version: '18'
     - run: yarn
     - run: yarn cli login
-      env:
-        ECONOMIST_USER: ${{ secrets.ECONOMIST_USER }}
-        ECONOMIST_PASS: ${{ secrets.ECONOMIST_PASS }}
     - run: yarn cli get-current-week
     - run: yarn cli scrape-articles
     - run: yarn cli build-epub
     - run: ./bin/zip_and_check.sh
     - run: yarn cli mail-epub
-      env:
-        SMTP_SENDER: ${{ secrets.SMTP_SENDER }}
-        SMTP_RECIPIENTS: ${{ secrets.SMTP_RECIPIENTS }}
-        SMTP_USER: ${{ secrets.SMTP_USER }}
-        SMTP_PASS: ${{ secrets.SMTP_PASS }}
