@@ -4,3 +4,5 @@ state/*
 !state/.gitempty
 out/*
 !out/.gitempty
+screenshots/*
+!screenshots/.gitempty

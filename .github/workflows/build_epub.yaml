@@ -16,7 +16,17 @@ jobs:
       with:
         node-version: '18'
     - run: yarn
-    - run: yarn cli cron
+    - run: yarn cli login
       env:
+        ECONOMIST_USER: ${{ secrets.ECONOMIST_USER }}
+        ECONOMIST_PASS: ${{ secrets.ECONOMIST_PASS }}
+    - run: yarn cli get-current-week
+    - run: yarn cli scrape-articles
+    - run: yarn cli build-epub
+    - run: ./bin/zip_and_check.sh
+    - run: yarn cli mail-epub
+      env:
+        SMTP_PASS: ${{ secrets.SMTP_SENDER }}
+        SMTP_PASS: ${{ secrets.SMTP_RECIPIENTS }}
         SMTP_PASS: ${{ secrets.SMTP_PASS }}
         SMTP_USER: ${{ secrets.SMTP_USER }}

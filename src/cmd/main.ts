@@ -9,6 +9,7 @@ import { scrapeArticle, scrapeArticles } from "./scrape-articles";
 import { buildEpub, cleanContent } from "./build-epub";
 import { login } from "./login";
 import { getWeeklyEdition } from "./getWeeklyEdition";
+import { mail } from "./mail";
 
 const screenshotPath = path.join(__dirname, "..", "..", "screenshot", "part-")
 const stateDir = path.join(__dirname, "..", "..", "state")
@@ -110,13 +111,15 @@ program.command('scrape-articles')
 
 program.command('build-epub')
   .description('build the epub')
-  // .argument('<string>', 'string to split')
-  // .option('--first', 'display just the first substring')
-  // .option('-s, --separator <char>', 'separator character', ',')
-  // .action((str, options) => {
   .action(async () => {
     const stateStore = new StateStore(statePath)
     await buildEpub(stateStore, path.join(__dirname, '..', '..', 'out'))
+})
+
+program.command('mail-epub')
+  .description('mail the epub')
+  .action(async () => {
+    await mail(await readFile(path.join(__dirname, '..', '..', 'out', 'weekly.epub')), process.env.SMTP_RECIPIENTS || "m@mdp.im")
 })
 
 program.command('debug-clean-article')
