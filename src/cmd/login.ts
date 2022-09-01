@@ -3,6 +3,10 @@ import StateStore from "../State";
 import { screenshot } from "../utils";
 
 export async function login(context: BrowserContext, state: StateStore): Promise<void> {
+    if (!process.env.ECONOMIST_USER) {
+        throw new Error("Unable to login without credentials")
+    }
+    console.log("Logging in as:", process.env.ECONOMIST_USER)
     const page = await context.newPage()
     await page.goto('https://economist.com');
     await page.waitForLoadState("domcontentloaded")
