@@ -26,7 +26,7 @@ jobs:
     - run: ./bin/zip_and_check.sh
     - run: yarn cli mail-epub
       env:
-        SMTP_PASS: ${{ secrets.SMTP_SENDER }}
-        SMTP_PASS: ${{ secrets.SMTP_RECIPIENTS }}
-        SMTP_PASS: ${{ secrets.SMTP_PASS }}
+        SMTP_SENDER: ${{ secrets.SMTP_SENDER }}
+        SMTP_RECIPIENTS: ${{ secrets.SMTP_RECIPIENTS }}
         SMTP_USER: ${{ secrets.SMTP_USER }}
+        SMTP_PASS: ${{ secrets.SMTP_PASS }}
