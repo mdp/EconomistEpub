@@ -39,7 +39,7 @@ const getArticle = async (url: URL, page: Page): Promise<ArticleContent> => {
     }
 
     if (!articleNode) throw new ArticleScrapeError("Article node not found")
-    const content = await articleNode.$$eval("p, h2", (el) => el.map((l) => l.innerHTML))
+    const content = await articleNode.$$eval("p, h2", (el) => el.map((l) => `<${l.tagName.toLowerCase()}> ${l.innerHTML} </${l.tagName.toLowerCase()}>`))
 
 
     return {
