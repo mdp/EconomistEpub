@@ -51,10 +51,6 @@ program
 
 program.command('login')
   .description('login to the economist and save state')
-  // .argument('<string>', 'string to split')
-  // .option('--first', 'display just the first substring')
-  // .option('-s, --separator <char>', 'separator character', ',')
-  // .action((str, options) => {
   .action(async () => {
     const context = await getContext()
     const stateStore = new StateStore(statePath)
@@ -65,6 +61,7 @@ program.command('login')
         screenshot(e.page, "login-error")
       }
       console.error(e)
+      throw e
     } finally {
       await close(context)
     }
@@ -82,6 +79,7 @@ program.command('get-current-week')
         screenshot(e.page, "get-weekly-articles-error")
       }
       console.error(e)
+      throw e
     } finally {
       await close(context)
     }
@@ -89,10 +87,6 @@ program.command('get-current-week')
 
 program.command('scrape-articles')
   .description('Get this week article list and save it to state')
-  // .argument('<string>', 'string to split')
-  // .option('--first', 'display just the first substring')
-  // .option('-s, --separator <char>', 'separator character', ',')
-  // .action((str, options) => {
   .action(async () => {
     const context = await getContext()
     const stateStore = new StateStore(statePath)
@@ -104,6 +98,7 @@ program.command('scrape-articles')
         screenshot(e.page, "get-weekly-articles-error")
       }
       console.error(e)
+      throw e
     } finally {
       await close(context)
     }
@@ -125,9 +120,6 @@ program.command('mail-epub')
 program.command('debug-clean-article')
   .description('Clean an article and see the html')
   .argument('article.json', 'Article json to clean')
-  // .option('--first', 'display just the first substring')
-  // .option('-s, --separator <char>', 'separator character', ',')
-  // .action((str, options) => {
   .action(async (fileName) => {
     const article = JSON.parse(await readFile(fileName, 'utf-8'))
     console.log(cleanContent(article.content))
@@ -136,9 +128,6 @@ program.command('debug-clean-article')
 program.command('debug-scrape-article')
   .description('scrape a url and dump the json details')
   .argument('url', 'URL to scrape')
-  // .option('--first', 'display just the first substring')
-  // .option('-s, --separator <char>', 'separator character', ',')
-  // .action((str, options) => {
   .action(async (url) => {
     const context = await getContext()
     console.log(JSON.stringify(await scrapeArticle(context, url), null, 2))

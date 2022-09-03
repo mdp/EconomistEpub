@@ -32,7 +32,6 @@ export const cleanContent = (content: string[]): string[] => {
         return true
     })
     return filtered.map((str) => {
-        str = str.replace(/\&amp\;\#39\;/g, "'")
         const dom = parseDocument(str)
         return render(dom, {
             xmlMode: true
